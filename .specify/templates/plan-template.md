@@ -3,7 +3,8 @@
 **Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
 **Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
 
-**Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/plan-template.md` for the execution workflow.
+**Note**: This template is filled in by the `/speckit.plan` command. See
+`.specify/templates/plan-template.md` for the execution workflow.
 
 ## Summary
 
@@ -17,21 +18,37 @@
   the iteration process.
 -->
 
-**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
-**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
-**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
-**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
-**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
-**Project Type**: [e.g., library/cli/web-service/mobile-app/compiler/desktop-app or NEEDS CLARIFICATION]  
-**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
-**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
-**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
+**Language/Version**: [e.g., TypeScript 5.x, Unity WebGL, Rust 1.75 or NEEDS CLARIFICATION]  
+**Primary Dependencies**: [e.g., React, Phaser, Pixi, Vite or NEEDS CLARIFICATION]  
+**Storage**: [if applicable, e.g., localStorage, IndexedDB, PostgreSQL or N/A]  
+**Testing**: [e.g., Vitest, Playwright, Cypress or NEEDS CLARIFICATION]  
+**Target Platform**: [e.g., mobile and desktop web browsers or NEEDS CLARIFICATION]  
+**Supported Browsers/Devices**: [e.g., iPhone Safari, Android Chrome, desktop Chrome/Edge or NEEDS CLARIFICATION]  
+**Input Model**: [e.g., touch-first with keyboard/mouse fallback or NEEDS CLARIFICATION]  
+**Project Type**: [e.g., web-game-hub, web-app + backend or NEEDS CLARIFICATION]  
+**Performance Goals**: [e.g., <=3s TTI, <=10s to first playable action, 60 fps gameplay or NEEDS CLARIFICATION]  
+**Constraints**: [e.g., 2D only, mobile-first, low asset weight, privacy-safe analytics or NEEDS CLARIFICATION]  
+**Accessibility Baseline**: [e.g., readable at 360px, reduced motion support, labeled controls or NEEDS CLARIFICATION]  
+**Telemetry**: [e.g., catalog_view, game_start, retry, session_complete, error events or NEEDS CLARIFICATION]  
+**Scale/Scope**: [e.g., initial catalog size, estimated DAU, number of game modules or NEEDS CLARIFICATION]
 
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- Browser-first delivery is defined: supported browsers/device classes are named, and
+  any unsupported capability has a fallback or explicit exclusion.
+- The feature remains within the 2D web mini-game catalog scope, or the plan records
+  an approved constitution exception.
+- Touch-first mobile UX is specified, with desktop keyboard/mouse behavior documented
+  where relevant.
+- Performance budgets are explicit, including load time and time-to-first-play goals.
+- The integration contract identifies what belongs to the shared shell versus the
+  per-game module, including metadata, analytics, and failure handling.
+- Accessibility, telemetry, and rollback or kill-switch expectations are captured for
+  every user-facing change.
+- Validation includes automated checks plus manual smoke coverage for mobile and
+  desktop browser profiles.
 
 ## Project Structure
 
@@ -56,39 +73,51 @@ specs/[###-feature]/
 -->
 
 ```text
-# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
-src/
-├── models/
-├── services/
-├── cli/
-└── lib/
+# [REMOVE IF UNUSED] Option 1: Web game hub (DEFAULT)
+apps/
+└── web/
+    ├── src/
+    │   ├── app/
+    │   ├── catalog/
+    │   ├── games/
+    │   └── shared/
+    └── tests/
+
+packages/
+├── game-sdk/
+├── platform-services/
+└── ui/
 
 tests/
 ├── contract/
 ├── integration/
-└── unit/
+└── smoke/
 
-# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
-backend/
-├── src/
-│   ├── models/
-│   ├── services/
-│   └── api/
-└── tests/
+# [REMOVE IF UNUSED] Option 2: Web app + backend services
+apps/
+├── web/
+│   ├── src/
+│   │   ├── app/
+│   │   ├── catalog/
+│   │   ├── games/
+│   │   └── shared/
+│   └── tests/
+└── api/
+    ├── src/
+    │   ├── routes/
+    │   ├── services/
+    │   └── domain/
+    └── tests/
 
-frontend/
-├── src/
-│   ├── components/
-│   ├── pages/
-│   └── services/
-└── tests/
+packages/
+├── game-sdk/
+├── platform-services/
+└── ui/
 
-# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
-api/
-└── [same as backend above]
-
-ios/ or android/
-└── [platform-specific structure: feature modules, UI flows, platform tests]
+tests/
+├── contract/
+├── integration/
+└── smoke/
 ```
 
 **Structure Decision**: [Document the selected structure and reference the real
@@ -100,5 +129,5 @@ directories captured above]
 
 | Violation | Why Needed | Simpler Alternative Rejected Because |
 |-----------|------------|-------------------------------------|
-| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
+| [e.g., native wrapper] | [current need] | [why browser-only delivery is insufficient] |
+| [e.g., per-game custom SDK] | [specific problem] | [why shared platform layer is insufficient] |
